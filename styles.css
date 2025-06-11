@@ -1,0 +1,184 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f0f4f8;
+  color: #333;
+}
+
+.netlearn-bg-primary {
+  background-color: #3b82f6;
+}
+
+.netlearn-bg-secondary {
+  background-color: #10b981;
+}
+
+.netlearn-text-primary {
+  color: #3b82f6;
+}
+
+.netlearn-text-secondary {
+  color: #10b981;
+}
+
+.netlearn-border-primary {
+  border-color: #3b82f6;
+}
+
+.module-card {
+  transition: all 0.3s ease;
+}
+
+.module-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
+}
+
+.progress-bar {
+  height: 8px;
+  border-radius: 4px;
+  background-color: #e2e8f0;
+  overflow: hidden;
+}
+
+.progress-value {
+  height: 100%;
+  border-radius: 4px;
+  background-color: #3b82f6;
+}
+
+.status-badge {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.badge-completed {
+  background-color: #10b981;
+  color: white;
+}
+
+.badge-in-progress {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.badge-locked {
+  background-color: #9ca3af;
+  color: white;
+}
+
+.network-node {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3b82f6;
+  color: white;
+  font-size: 24px;
+}
+
+.node-connection {
+  height: 3px;
+  background-color: #3b82f6;
+  position: relative;
+}
+
+.node-connection::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -4px;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-left: 10px solid #3b82f6;
+  border-bottom: 5px solid transparent;
+}
+
+.streak-box {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 12px;
+  background-color: #e5e7eb;
+}
+
+.streak-active {
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Animation for the packet flow */
+@keyframes packetFlow {
+  0% { transform: translateX(0); opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+.packet {
+  width: 12px;
+  height: 12px;
+  background-color: #10b981;
+  border-radius: 50%;
+  position: absolute;
+  animation: packetFlow 3s infinite;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 640px) {
+  .desktop-sidebar {
+    display: none;
+  }
+  
+  .mobile-navbar {
+    display: flex;
+  }
+}
+
+@media (min-width: 641px) {
+  .desktop-sidebar {
+    display: flex;
+  }
+  
+  .mobile-navbar {
+    display: none;
+  }
+}
+
+/* Quiz styles */
+.quiz-option {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.quiz-option:hover {
+  background-color: #e2e8f0;
+}
+
+.quiz-option.selected {
+  background-color: #dbeafe;
+  border-color: #3b82f6;
+}
+
+.quiz-option.correct {
+  background-color: #d1fae5;
+  border-color: #10b981;
+}
+
+.quiz-option.incorrect {
+  background-color: #fee2e2;
+  border-color: #ef4444;
+}
+
+/* Glossary styles */
+.glossary-term {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  cursor: help;
+  color: #3b82f6;
+}
