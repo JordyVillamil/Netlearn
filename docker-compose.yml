@@ -3,7 +3,8 @@ version: "3.9"
 services:
   db:
     image: postgres:15
-    environment:
+    environment:    
+      ENV_FILE: .env.docker
       POSTGRES_USER: cibernodo
       POSTGRES_PASSWORD: cibernodo123
       POSTGRES_DB: cibernodo_db
@@ -23,6 +24,8 @@ services:
       - db
     environment:
       ENV_FILE: .env.docker
+    env_file:
+      - .env.docker
 
 volumes:
   pgdata:

@@ -18,6 +18,8 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 from app.core.database import Base
 from app.models import user, course, lesson  # importa todos tus modelos
+from app.models.enrollment import Enrollment
+import os
 
 target_metadata = Base.metadata
 
@@ -25,7 +27,13 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+def get_url():
+    return os.getenv(
+        "DATABASE_URL",
+        "postgresql+psycopg2://cibernodo:cibernodo123@localhost:5432/cibernodo_db"
+    )
 
+config.set_main_option("sqlalchemy.url", get_url())
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
