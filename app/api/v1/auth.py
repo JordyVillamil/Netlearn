@@ -35,3 +35,36 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         raise HTTPException(status_code=401, detail="Incorrect email or password")
     access_token = create_access_token(data={"sub": db_user.email})
     return {"access_token": access_token, "token_type": "bearer"}
+
+from datetime import timedelta
+from app.schemas.user import PasswordResetRequest, PasswordResetConfirm
+from app.core.security import decode_access_token
+
+@router.post("/password-reset/request")
+def password_reset_request(
+    data: PasswordResetRequest,
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.email == data.email).first()
+    if not user:
+        return {"msg": "If the email exists, a reset link will be sent."}
+    reset_token = create_access_token({"sub": user.email}, expires_delta=timedelta(minutes=15))
+    # En producción, aquí enviarías el token por email
+    print(f"Token de recuperación para {user.email}: {reset_token}")
+    return {"msg": "If the email exists, a reset link will be sent.", "reset_token": reset_token}  # Solo para pruebas
+
+@router.post("/password-reset/confirm")
+def password_reset_confirm(
+    data: PasswordResetConfirm,
+    db: Session = Depends(get_db)
+):
+    payload = decode_access_token(data.token)
+    if not payload:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+    email = payload.get("sub")
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.hashed_password = get_password_hash(data.new_password)
+    db.commit()
+    return {"msg": "Password updated successfully"}
