@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from app.core.database import SessionLocal
+from app.api.v1.deps import get_current_user
 
 router = APIRouter()
 
@@ -23,3 +24,7 @@ def db_check(db: Session = Depends(get_db)):
         return {"db_status": "ok"}
     except Exception as e:
         return {"db_status": "error", "detail": str(e)}
+    
+@router.get("/private")
+def private_route(current_user=Depends(get_current_user)):
+    return {"message": f"Hola, {current_user.email}. Esta es una ruta protegida."}    
