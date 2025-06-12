@@ -8,3 +8,4 @@ pydantic[dotenv]
 python-multipart
 pydantic-settings
 email-validator
+alembic

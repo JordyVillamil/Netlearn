@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.api.v1 import root, auth, courses
-
+from app.api.v1 import users
 
 app = FastAPI(
     title="Cibernodo API",
@@ -10,3 +10,4 @@ app = FastAPI(
 app.include_router(root.router)
 app.include_router(auth.router)
 app.include_router(courses.router)
+app.include_router(users.router)
