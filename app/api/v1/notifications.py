@@ -7,6 +7,7 @@ from app.api.v1.deps import get_current_user
 from app.models.user import User
 from typing import List
 
+
 router = APIRouter(prefix="/notifications", tags=["notifications"])
 
 def get_db():

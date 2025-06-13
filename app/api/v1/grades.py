@@ -11,6 +11,7 @@ from app.models.exam import Exam
 from app.models.grade import Grade
 from app.models.user import User
 from app.schemas.grade import ExamSubmission, GradeCreate, GradeRead
+from app.models.notification import Notification
 
 router = APIRouter(prefix="/grades", tags=["grades"])
 
@@ -62,6 +63,12 @@ def submit_exam(
     # Guardar calificación
     db_grade = Grade(user_id=current_user.id, exam_id=exam.id, score=score)
     db.add(db_grade)
+    db.commit()
+    notification = Notification(
+    user_id=current_user.id,
+    message=f"Has completado el examen '{exam.title}' con una calificación de {score}."
+    )
+    db.add(notification)
     db.commit()
     db.refresh(db_grade)
     return db_grade

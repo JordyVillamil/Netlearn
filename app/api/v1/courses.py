@@ -7,6 +7,7 @@ from app.schemas.course import CourseCreate, CourseRead
 from app.schemas.lesson import LessonCreate, LessonRead
 from typing import List
 
+
 router = APIRouter(prefix="/courses", tags=["courses"])
 
 def get_db():

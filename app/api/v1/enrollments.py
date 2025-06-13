@@ -7,6 +7,7 @@ from app.schemas.enrollment import EnrollmentCreate, EnrollmentRead
 from typing import List
 from app.api.v1.deps import get_current_user
 from app.models.user import User
+from app.models.notification import Notification
 
 router = APIRouter(prefix="/enrollments", tags=["enrollments"])
 
@@ -35,7 +36,14 @@ def enroll(
     db.add(new_enrollment)
     db.commit()
     db.refresh(new_enrollment)
-    return new_enrollment
+
+    # Notificación automática
+    notification = Notification(
+    user_id=current_user.id,
+    message=f"Te has inscrito exitosamente al curso ID {enrollment.course_id}."
+    )
+    db.add(notification)
+    db.commit()
 
 @router.get("/", response_model=List[EnrollmentRead])
 def my_enrollments(
