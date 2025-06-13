@@ -4,6 +4,7 @@ from app.api.v1 import users
 from app.api.v1 import enrollments
 from app.api.v1 import exams
 from app.api.v1 import questions, answers, grades
+from app.api.v1 import notifications
 
 app = FastAPI(
     title="Cibernodo API",
@@ -19,3 +20,4 @@ app.include_router(exams.router)
 app.include_router(questions.router)
 app.include_router(answers.router)
 app.include_router(grades.router)
+app.include_router(notifications.router)

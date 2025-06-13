@@ -19,6 +19,7 @@ if config.config_file_name is not None:
 from app.core.database import Base
 from app.models import user, course, lesson  # importa todos tus modelos
 from app.models.enrollment import Enrollment
+from app.models.notification import Notification
 import os
 
 target_metadata = Base.metadata
