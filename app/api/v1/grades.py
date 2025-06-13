@@ -14,7 +14,7 @@ from app.schemas.grade import ExamSubmission, GradeCreate, GradeRead
 
 router = APIRouter(prefix="/grades", tags=["grades"])
 
-def get_db():
+def get_db(): 
     db = SessionLocal()
     try:
         yield db
