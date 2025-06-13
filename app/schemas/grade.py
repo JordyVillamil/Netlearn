@@ -1,4 +1,9 @@
+from typing import List
 from pydantic import BaseModel
+
+class ExamSubmission(BaseModel):
+    exam_id: int
+    answers: List[int]
 
 class GradeCreate(BaseModel):
     exam_id: int
