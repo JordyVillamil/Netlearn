@@ -2,12 +2,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // =================================================================
     // CONFIGURACIÓN Y SELECTORES DE ELEMENTOS
     // =================================================================
-    const API_BASE_URL = 'http://localhost:8000';
+    const API_BASE_URL = 'http://192.168.2.14:8000';
 
     // Pantallas principales
     const authScreen = document.getElementById('auth-screen');
     const appContainer = document.getElementById('app-container');
-    const notificationBanner = document.getElementById('notification-banner'); // Asumiendo que tienes un div para notificaciones
+    const notificationBanner = document.getElementById('notification-banner');
 
     // Elementos de autenticación
     const loginTab = document.getElementById('login-tab');
@@ -33,69 +33,43 @@ document.addEventListener('DOMContentLoaded', function() {
     // FUNCIONES DE UTILIDAD
     // =================================================================
 
-    /**
-     * Muestra una notificación en la pantalla.
-     * @param {string} message El mensaje a mostrar.
-     * @param {boolean} isError Si es true, la notificación será de error (roja).
-     */
     function showNotification(message, isError = false) {
-        if (!notificationBanner) return; // Salir si no hay banner
+        if (!notificationBanner) return;
         notificationBanner.textContent = message;
-        notificationBanner.className = 'fixed top-5 right-5 p-4 rounded-lg shadow-lg text-white z-50'; // Estilos base
+        notificationBanner.className = 'fixed top-5 right-5 p-4 rounded-lg shadow-lg text-white z-50';
         notificationBanner.classList.add(isError ? 'bg-red-500' : 'bg-green-500');
         notificationBanner.classList.remove('hidden');
-
-        setTimeout(() => {
-            notificationBanner.classList.add('hidden');
-        }, 3000);
+        setTimeout(() => notificationBanner.classList.add('hidden'), 3000);
     }
 
-    /**
-     * Realiza una petición fetch con el token de autorización.
-     * @param {string} url La URL del endpoint (sin el base).
-     * @param {object} options Opciones para la petición fetch.
-     */
     async function fetchWithAuth(url, options = {}) {
         const token = localStorage.getItem('token');
-        const headers = {
-            'Content-Type': 'application/json',
-            ...options.headers,
-        };
-
+        const headers = { 'Content-Type': 'application/json', ...options.headers };
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
-
         const response = await fetch(`${API_BASE_URL}${url}`, { ...options, headers });
-
         if (response.status === 401) {
-            // Token inválido o expirado, forzar logout
             handleLogout();
             throw new Error('Unauthorized');
         }
-
         return response;
     }
 
 
     // =================================================================
-    // CARGA DE DATOS DESDE LA API (Instrucciones implementadas)
+    // CARGA Y RENDERIZADO DE DATOS (LA PARTE CLAVE)
     // =================================================================
 
-    /**
-     * Carga los puntos del usuario y los muestra en la UI.
-     */
     async function loadUserPoints() {
         try {
             const response = await fetchWithAuth('/gamification/points/me');
             if (!response.ok) throw new Error('Could not fetch points.');
             const data = await response.json();
-            // Asume que tienes un elemento con id 'user-points' para mostrar los puntos
             const userPointsEl = document.getElementById('user-points');
-            if (userPointsEl) userPointsEl.textContent = data.total;
+            if (userPointsEl) userPointsEl.textContent = `Puntos: ${data.total}`;
         } catch (error) {
             console.error("Error loading points:", error);
-            showNotification('No se pudieron cargar tus puntos.', true);
         }
     }
 
@@ -107,56 +81,67 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetchWithAuth('/courses/');
             if (!response.ok) throw new Error('Could not fetch courses.');
             const courses = await response.json();
-
-            // Asume que tienes un elemento con id 'courses-container'
             const coursesContainer = document.getElementById('courses-container');
             if (!coursesContainer) return;
 
             coursesContainer.innerHTML = ''; // Limpiar contenido anterior
+
+            if (courses.length === 0) {
+                coursesContainer.innerHTML = '<p class="text-gray-500">No hay cursos disponibles en este momento.</p>';
+                return;
+            }
+
+            // --- ESTA ES LA LÓGICA DE RENDERIZADO ---
             courses.forEach(course => {
-                const courseElement = document.createElement('div');
-                courseElement.className = 'bg-white p-4 rounded-lg shadow'; // Añade tus clases de Tailwind
-                courseElement.innerHTML = `
-                    <h3 class="font-bold">${course.title}</h3>
-                    <p class="text-sm text-gray-600">${course.description}</p>
+                const courseCard = document.createElement('div');
+                courseCard.className = 'module-card bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition';
+                
+                courseCard.innerHTML = `
+                    <div class="flex items-center mb-4">
+                        <div class="p-3 rounded-full netlearn-bg-primary text-white mr-4">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800">${course.title}</h3>
+                            <p class="text-sm text-gray-500">Módulo</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">${course.description}</p>
+                    <button class="w-full netlearn-bg-primary text-white py-2 rounded-lg font-semibold hover:opacity-90">
+                        Empezar Curso
+                    </button>
                 `;
-                coursesContainer.appendChild(courseElement);
+                coursesContainer.appendChild(courseCard);
             });
+            // --- FIN DE LA LÓGICA DE RENDERIZADO ---
+
         } catch (error) {
             console.error("Error loading courses:", error);
             showNotification('No se pudieron cargar los cursos.', true);
         }
     }
     
-    /**
-     * Carga los datos del perfil del usuario.
-     */
     async function loadUserProfile() {
         try {
             const response = await fetchWithAuth('/users/me');
             if (!response.ok) throw new Error('Could not fetch profile.');
             const user = await response.json();
             
-            // Asume elementos para mostrar los datos del perfil
             const profileName = document.getElementById('profile-name');
             const profileEmail = document.getElementById('profile-email');
-            if(profileName) profileName.textContent = user.email; // O user.full_name si lo tienes
-            if(profileEmail) profileEmail.textContent = user.email;
+
+            if(profileName) profileName.textContent = `Bienvenido, ${user.email}`;
+            if(profileEmail) profileEmail.textContent = `Email: ${user.email}`;
 
         } catch (error) {
             console.error("Error loading profile:", error);
         }
     }
 
-
     // =================================================================
     // LÓGICA DE LA INTERFAZ DE USUARIO (UI)
     // =================================================================
 
-    /**
-     * Cambia entre la vista de Login y Registro.
-     * @param {'login' | 'register'} target
-     */
     function switchAuthTab(target) {
         const isLogin = target === 'login';
         loginTab.classList.toggle('netlearn-border-primary', isLogin);
@@ -167,19 +152,10 @@ document.addEventListener('DOMContentLoaded', function() {
         registerForm.classList.toggle('hidden', isLogin);
     }
 
-    /**
-     * Cambia la vista principal de la aplicación.
-     * @param {string} viewName El nombre de la vista a mostrar.
-     */
     function switchView(viewName) {
-        // Ocultar todas las vistas
         Object.values(views).forEach(view => view && view.classList.add('hidden'));
-
-        // Resetear estilos de los links
         sidebarLinks.forEach(link => link.classList.remove('netlearn-bg-primary', 'text-white'));
-        mobileNavLinks.forEach(link => link.classList.remove('text-blue-600'));
-
-        // Mostrar la vista seleccionada y activar el link correspondiente
+        
         const viewToShow = views[viewName];
         if (viewToShow) {
             viewToShow.classList.remove('hidden');
@@ -190,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     loadUserPoints();
                     break;
                 case 'learning-path':
-                    loadCourses();
+                    // Aquí podrías cargar la ruta de aprendizaje específica del usuario
                     break;
                 case 'profile':
                     loadUserProfile();
@@ -198,10 +174,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Activar el estilo del link (simplificado para mayor claridad)
-        const linkIndex = ['dashboard', 'learning-path', 'profile', 'admin'].indexOf(viewName);
-        if (linkIndex > -1 && sidebarLinks[linkIndex]) {
-            sidebarLinks[linkIndex].classList.add('netlearn-bg-primary', 'text-white');
+        const linkToActivate = document.querySelector(`.sidebar-link[data-view="${viewName}"]`);
+        if(linkToActivate) {
+             linkToActivate.classList.add('netlearn-bg-primary', 'text-white');
         }
     }
 
@@ -226,7 +201,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = await response.json();
                 localStorage.setItem('token', data.access_token);
                 showNotification('Inicio de sesión exitoso.');
-                initializeAppState(); // Inicializar la app
+                authScreen.classList.add('hidden');
+                appContainer.classList.remove('hidden');
+                switchView('dashboard');
             } else {
                 showNotification('Email o contraseña incorrectos.', true);
             }
@@ -250,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (response.ok) {
                 showNotification('Registro exitoso. Ahora puedes iniciar sesión.');
-                switchAuthTab('login'); // Cambiar a la pestaña de login
+                switchAuthTab('login');
             } else {
                 const errorData = await response.json();
                 showNotification(`Error en el registro: ${errorData.detail}`, true);
@@ -273,15 +250,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // INICIALIZACIÓN DE LA APLICACIÓN
     // =================================================================
 
-    /**
-     * Comprueba el estado de la app al cargar: si hay token, muestra la app; si no, la pantalla de auth.
-     */
     function initializeAppState() {
         const token = localStorage.getItem('token');
         if (token) {
             authScreen.classList.add('hidden');
             appContainer.classList.remove('hidden');
-            switchView('dashboard'); // Carga la vista por defecto
+            switchView('dashboard');
         } else {
             authScreen.classList.remove('hidden');
             appContainer.classList.add('hidden');
@@ -289,28 +263,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Asignación de todos los Event Listeners
-    // Se añade una comprobación para asegurar que el elemento existe antes de añadir el listener
-    if (loginTab) {
-        loginTab.addEventListener('click', () => switchAuthTab('login'));
-    }
-    if (registerTab) {
-        registerTab.addEventListener('click', () => switchAuthTab('register'));
-    }
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
-    }
-    if (registerForm) {
-        registerForm.addEventListener('submit', handleRegister);
-    }
-    if (logoutButton) {
-        logoutButton.addEventListener('click', handleLogout);
-    }
+    if (loginTab) loginTab.addEventListener('click', () => switchAuthTab('login'));
+    if (registerTab) registerTab.addEventListener('click', () => switchAuthTab('register'));
+    if (loginForm) loginForm.addEventListener('submit', handleLogin);
+    if (registerForm) registerForm.addEventListener('submit', handleRegister);
+    if (logoutButton) logoutButton.addEventListener('click', handleLogout);
 
     sidebarLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const view = link.getAttribute('data-view');
-if(view) switchView(view);
+            if(view) switchView(view);
         });
     });
     
@@ -322,7 +285,5 @@ if(view) switchView(view);
         });
     });
 
-
-    // Ejecutar la inicialización al cargar la página
     initializeAppState();
 });
