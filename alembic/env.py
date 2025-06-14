@@ -20,6 +20,8 @@ from app.core.database import Base
 from app.models import user, course, lesson  # importa todos tus modelos
 from app.models.enrollment import Enrollment
 from app.models.notification import Notification
+from app.models.points import Points
+from app.models.achievement import Achievement
 import os
 
 target_metadata = Base.metadata
