@@ -14,8 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const registerTab = document.getElementById('register-tab');
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
-    const loginButton = document.getElementById('login-button');
-    const registerButton = document.getElementById('register-button');
     const logoutButton = document.getElementById('logout-button');
 
     // Vistas de la aplicación
@@ -291,17 +289,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Asignación de todos los Event Listeners
-    loginTab.addEventListener('click', () => switchAuthTab('login'));
-    registerTab.addEventListener('click', () => switchAuthTab('register'));
-    loginForm.addEventListener('submit', handleLogin);
-    registerForm.addEventListener('submit', handleRegister);
-    logoutButton.addEventListener('click', handleLogout);
+    // Se añade una comprobación para asegurar que el elemento existe antes de añadir el listener
+    if (loginTab) {
+        loginTab.addEventListener('click', () => switchAuthTab('login'));
+    }
+    if (registerTab) {
+        registerTab.addEventListener('click', () => switchAuthTab('register'));
+    }
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    if (registerForm) {
+        registerForm.addEventListener('submit', handleRegister);
+    }
+    if (logoutButton) {
+        logoutButton.addEventListener('click', handleLogout);
+    }
 
     sidebarLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const view = link.getAttribute('data-view');
-            if(view) switchView(view);
+if(view) switchView(view);
         });
     });
     

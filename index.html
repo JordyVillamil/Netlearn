@@ -1,28 +1,148 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NetLearn - Aprende Redes Informáticas</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetLearn - Aprende Redes Informáticas</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <!-- Login/Register Screen (Initially Visible) -->
-  <div id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6">
-    <!-- ... todo el contenido de autenticación ... -->
-  </div>
+<body class="bg-gray-100 font-poppins">
 
-  <!-- Main App (Hidden initially) -->
-  <div id="app-container" class="hidden min-h-screen bg-gray-50 flex">
-    <!-- ... todo el contenido de la aplicación ... -->
-  </div>
+    <!-- ============================================= -->
+    <!-- PANTALLA DE AUTENTICACIÓN (VISIBLE INICIALMENTE) -->
+    <!-- ============================================= -->
+    <div id="auth-screen">
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-2">NetLearn</h2>
+                <p class="text-center text-gray-500 mb-6">Inicia sesión o regístrate para empezar a aprender</p>
+                <!-- Pestañas -->
+                <div class="border-b border-gray-200">
+                    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                        <button id="login-tab" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm netlearn-border-primary netlearn-text-primary">
+                            Iniciar Sesión
+                        </button>
+                        <button id="register-tab" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                            Registrarse
+                        </button>
+                    </nav>
+                </div>
+                <!-- Formulario Login -->
+                <form id="login-form" class="mt-6">
+                    <div>
+                        <input type="email" id="login-email" placeholder="Correo electrónico" class="w-full px-4 py-3 rounded-lg bg-gray-100 border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div class="mt-4">
+                        <input type="password" id="login-password" placeholder="Contraseña" class="w-full px-4 py-3 rounded-lg bg-gray-100 border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <button type="submit" class="mt-6 w-full netlearn-bg-primary text-white py-3 rounded-lg font-semibold text-lg hover:opacity-90 transition duration-300">Entrar</button>
+                </form>
+                <!-- Formulario Registro -->
+                <form id="register-form" class="hidden mt-6">
+                     <div>
+                        <input type="email" id="register-email" placeholder="Correo electrónico" class="w-full px-4 py-3 rounded-lg bg-gray-100 border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div class="mt-4">
+                        <input type="password" id="register-password" placeholder="Contraseña" class="w-full px-4 py-3 rounded-lg bg-gray-100 border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <button type="submit" class="mt-6 w-full netlearn-bg-primary text-white py-3 rounded-lg font-semibold text-lg hover:opacity-90 transition duration-300">Crear Cuenta</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
-  <!-- Añade esto en algún lugar dentro de tu <body> -->
-<div id="notification-banner" class="hidden"></div>
+    <!-- ============================================= -->
+    <!-- CONTENEDOR PRINCIPAL DE LA APP (OCULTO INICIALMENTE) -->
+    <!-- ============================================= -->
+    <div id="app-container" class="hidden min-h-screen bg-gray-50 md:flex">
+        <!-- Barra Lateral (Desktop) -->
+        <aside class="w-64 bg-white shadow-md desktop-sidebar flex-col justify-between hidden">
+            <!-- Contenido del Sidebar -->
+             <div>
+                <div class="p-6 text-center">
+                    <h1 class="text-2xl font-bold netlearn-text-primary">NetLearn</h1>
+                </div>
+                <nav class="mt-6">
+                    <a href="#" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100" data-view="dashboard">
+                        <i class="fas fa-tachometer-alt w-6"></i><span class="ml-4">Dashboard</span>
+                    </a>
+                    <a href="#" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100" data-view="learning-path">
+                        <i class="fas fa-road w-6"></i><span class="ml-4">Ruta de Aprendizaje</span>
+                    </a>
+                    <a href="#" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100" data-view="profile">
+                        <i class="fas fa-user-circle w-6"></i><span class="ml-4">Perfil</span>
+                    </a>
+                    <!-- Link de Admin (Opcional) -->
+                    <a href="#" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100" data-view="admin">
+                        <i class="fas fa-cogs w-6"></i><span class="ml-4">Admin</span>
+                    </a>
+                </nav>
+            </div>
+            <div class="p-6">
+                 <button id="logout-button" class="w-full text-left flex items-center px-4 py-2 text-gray-700 hover:bg-red-100 hover:text-red-600 rounded-lg">
+                    <i class="fas fa-sign-out-alt w-6"></i><span class="ml-4">Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
 
-  <script src="app.js"></script>
+        <!-- Contenido Principal -->
+        <main class="flex-1 p-6 md:p-10">
+            <!-- Vista del Dashboard -->
+            <div id="dashboard-view">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Dashboard</h2>
+                <p>Bienvenido a NetLearn. Aquí verás tu progreso y próximos pasos.</p>
+                <div id="user-points" class="font-bold text-lg"></div>
+                <div id="courses-container" class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Los cursos se cargarán aquí dinámicamente -->
+                </div>
+            </div>
+            
+            <!-- Vista de Ruta de Aprendizaje -->
+            <div id="learning-path-view" class="hidden">
+                 <h2 class="text-3xl font-bold text-gray-800 mb-4">Ruta de Aprendizaje</h2>
+            </div>
+            
+            <!-- Vista de Lección -->
+            <div id="lesson-view" class="hidden">
+                 <h2 class="text-3xl font-bold text-gray-800 mb-4">Lección</h2>
+            </div>
+
+            <!-- Vista de Perfil -->
+            <div id="profile-view" class="hidden">
+                 <h2 class="text-3xl font-bold text-gray-800 mb-4">Mi Perfil</h2>
+                 <p id="profile-name"></p>
+                 <p id="profile-email"></p>
+            </div>
+
+            <!-- Vista de Admin -->
+            <div id="admin-view" class="hidden">
+                 <h2 class="text-3xl font-bold text-gray-800 mb-4">Panel de Administración</h2>
+            </div>
+        </main>
+    </div>
+
+    <!-- Barra de Navegación (Móvil) -->
+    <nav class="mobile-navbar fixed bottom-0 left-0 right-0 bg-white shadow-t md:hidden">
+        <div class="flex justify-around">
+            <a href="#" class="flex flex-col items-center p-3 text-gray-500" data-view="dashboard">
+                <i class="fas fa-tachometer-alt"></i><span class="text-xs">Dashboard</span>
+            </a>
+            <a href="#" class="flex flex-col items-center p-3 text-gray-500" data-view="learning-path">
+                <i class="fas fa-road"></i><span class="text-xs">Ruta</span>
+            </a>
+            <a href="#" class="flex flex-col items-center p-3 text-gray-500" data-view="profile">
+                <i class="fas fa-user-circle"></i><span class="text-xs">Perfil</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Contenedor para Notificaciones -->
+    <div id="notification-banner" class="hidden"></div>
+
+    <script src="app.js"></script>
 </body>
 </html>
+
